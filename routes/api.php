@@ -26,7 +26,10 @@ Route::controller(ProductCategoryController::class)->group(function () {
     Route::get('product-categories', 'index')->name('product.category.index');
     Route::post('add-category', 'store')->name('product.category.store');
 });
+
+
 Route::controller(ProductController::class)->group(function () {
     Route::get('products', 'index')->name('product.index');
     Route::post('add-product', 'store')->name('product.store');
+    Route::delete('delete-product/{productId}', 'destroy')->name('product.destroy');
 });

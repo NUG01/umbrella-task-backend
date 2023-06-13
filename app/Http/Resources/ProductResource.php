@@ -2,6 +2,8 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Product;
+use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -17,10 +19,11 @@ class ProductResource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'category_name' => $this->category->name,
-            'image' => $this->image,
+            'description' => $this->description,
+            'category_names' => ProductCategory::whereIn('id', $this->product_categories_id)->pluck('name'),
+            'images' => $this->images,
             'price' => $this->price,
-            'in_stock' => $this->in_stock == true ? 'კი' : 'არა',
+            'created_at' => $this->created_at,
         ];
     }
 }
