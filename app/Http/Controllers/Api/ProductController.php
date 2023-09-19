@@ -14,32 +14,22 @@ class ProductController extends Controller
 {
     public function index()
     {
-        if (!request()->has('product_name')) {
-
-            return response()->json(ProductResource::collection(Product::latest()->get()));
+        if (!request()->has('search')) {
+            return ProductResource::collection(Product::latest()->paginate(50));
         }
 
-
-        $products = Product::query()
-            ->when(!empty(request()->product_name), function ($query) {
-                $query->where('name', 'like', request()->product_name . '%');
-            })
-            ->when(!empty(request()->category_name), function ($query) {
-                $categoryId = ProductCategory::where('name', request()->category_name)->first()['id'];
-                $query->whereJsonContains('product_categories_id', $categoryId);
-            })->when(!empty(request()->price), function ($query) {
-                $query->where('price', '<=', request()->price);
-            })->when(!empty(request()->description), function ($query) {
-                $query->where('description',  'like',  request()->description . '%');
-            })->get();
-
-        return response()->json(ProductResource::collection($products));
+        $products = Product::query()->filter()->get();
+        return ProductResource::collection($products);
     }
+
+
     public function destroy($productId)
     {
         Product::where('id', $productId)->delete();
         return response()->noContent();
     }
+
+
     public function store(StoreProductRequest $request)
     {
         $categoryArray = [];
